@@ -1,0 +1,62 @@
+version: '3.9'
+
+services:
+  # Setup filekeeper-api node app
+  filekeeper-api:
+    container_name: filekeeper-api
+    image: filekeeper-api
+    build:
+      context: .
+      #entrypoint: sh -c 'sleep 5 && npm run start:prod'
+      ### For development run
+      target: development
+    entrypoint: sh -c 'sleep 5 && npm run dev'
+    volumes:
+      - ./src:/home/node/filekeeper-api/src
+    ###
+    env_file:
+      - .env
+    ports:
+      - '9090:9090'
+    restart: on-failure
+    networks:
+      - traefik-proxy
+    depends_on:
+      - mysql
+
+  # Setup MySql database
+  mysql:
+    image: mysql:8.1.0
+    container_name: mysql
+    hostname: mysql
+    command: --default-authentication-plugin=caching_sha2_password
+    restart: always
+    env_file:
+      - .env
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_HOST: ${MYSQL_HOST}
+      MYSQL_PORT: ${MYSQL_PORT}
+    expose:
+      - ${MYSQL_PORT}
+    ports:
+      - ${MYSQL_PORT}:${MYSQL_PORT}
+    networks:
+      - traefik-proxy
+    volumes:
+      - mysqlData:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  mysqlData:
+
+
+networks:
+  traefik-proxy:
