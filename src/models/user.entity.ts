@@ -20,23 +20,23 @@ export class User {
   //@Generated('uuid')
   //@Index()
   //public uuid: string;
- 
+
   //@IsEmail()
   @Column({ type: 'varchar', unique: true })
   public email: string;
 
-  //@Column({ type: 'varchar', name: 'user_first_name' })
-  //public firstName: string;
+  @Column({ type: 'varchar' })
+  public firstName: string;
 
-  //@Column({ type: 'varchar', name: 'user_last_name' })
-  //public lastName: string;
+  @Column({ type: 'varchar' })
+  public lastName: string;
 
   //@Exclude()
-  //@Column({ type: 'boolean', name: 'email_confirmed', default: false })
-  //public emailConfirmed: boolean;
+  @Column({ type: 'boolean', default: false })
+  public emailConfirmed: boolean;
 
-  //@Column({ type: 'boolean', name: 'user_active', default: true })
-  //public active: boolean;
+  @Column({ type: 'boolean', default: true })
+  public active: boolean;
 
   //@Exclude()
   @Column({ type: 'varchar', nullable: false, select: false })

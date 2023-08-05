@@ -5,37 +5,17 @@ import { dataSource } from '../database/connection';
 import { entityManager } from '../database/entityManager';
 
 const signup = async (req: Request, res: Response, next: NextFunction) => {
-  console.log(' \x1b[41m ', '000000:  ', '00000vdvdvdvdv0', ' [0m ');
   const { email, password } = req.body;
 
-  const user = new User();
-
-	
-
-
-
-
-	
+  const user = new User()
   user.email = email;
   user.password = password;
 
-
   //user.userLastLogin = new Date();
   try {
-
-		
-
-
-
-
-
-
-
-
-
     const newUser = await dataSource.getRepository(User).save(user);
-		console.log(" \x1b[41m ", 'newUser:  ', newUser ," [0m " )
-		return res.status(201).json(newUser);
+    console.log(' \x1b[41m ', 'newUser:  ', newUser, ' [0m ');
+    return res.status(201).json(newUser);
   } catch (err) {
     console.log(' \x1b[41m ', 'err:  ', err, ' [0m ');
     throw err;
