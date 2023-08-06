@@ -4,7 +4,7 @@ import { IsEmailOrPhoneNumber } from '../../../common/decorators/isEmailOrPhoneN
 export class SignUpDto {
   // Custom decorator for validating user identifier base on task requirements
   @IsEmailOrPhoneNumber()
-  readonly identifier: string;
+  readonly username: string;
 
   @IsString()
   @IsNotEmpty()
@@ -27,7 +27,7 @@ export class SignUpDto {
 
 export class SignInDto {
   @IsEmail()
-  readonly identifier: string;
+  readonly username: string;
 
   @IsString()
   readonly password: string;
