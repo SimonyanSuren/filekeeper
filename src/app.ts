@@ -3,7 +3,7 @@ import 'express-async-errors';
 import { json } from 'body-parser';
 import { errorHandler } from './middlewares/errorHandler.middleware';
 import morgan from 'morgan';
-import { NotFoundError } from './errors/not-found-error';
+import { NotFoundError } from './errors/notFound.error';
 import authRouter from './routes/auth/auth.route';
 //import cookieSession from 'cookie-session';
 //import { NotFoundError, errorHandler } from '@ticketing_2023/common';

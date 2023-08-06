@@ -4,14 +4,13 @@ import { validateEnvConfigurations } from './common/config/env.validation';
 import Logger from './common/logger/logger';
 import { dataSource } from './database/connection';
 
-const bootstrap = async () => {
+const bootstrap = async (): Promise<void> => {
   // Validate environment configurations
   const validatedConfigs = validateEnvConfigurations(process.env);
 
   try {
     // Connect to database
     await dataSource.initialize();
-		console.log(" \x1b[41m ", 'dataSource.is:  ', dataSource.isInitialized ," [0m " )
   } catch (err) {
     Logger.error(err);
     throw err;

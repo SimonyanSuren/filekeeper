@@ -1,13 +1,11 @@
 import { IsEmail, IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
+import { IsEmailOrPhoneNumber } from '../../../common/decorators/isEmailOrPhoneNumber.decorator';
 
 export class SignUpDto {
-  @IsEmail()
-  @MaxLength(100)
-  readonly email: string;
+  // Custom decorator for validating user identifier base on task requirements
+  @IsEmailOrPhoneNumber()
+  readonly identifier: string;
 
-  /**
-   * @example string
-   */
   @IsString()
   @IsNotEmpty()
   readonly password: string;
@@ -29,7 +27,7 @@ export class SignUpDto {
 
 export class SignInDto {
   @IsEmail()
-  readonly email: string;
+  readonly identifier: string;
 
   @IsString()
   readonly password: string;

@@ -1,25 +1,50 @@
-import { NextFunction, Request, Response } from 'express';
-import { User } from '../models/user.entity';
-import { EntityManager } from 'typeorm';
-import { dataSource } from '../database/connection';
-import { entityManager } from '../database/entityManager';
+import { instanceToPlain } from 'class-transformer';
+import { Request, Response } from 'express';
+import { validatePassword } from '../common/utils/passwordValidator';
+import { BadRequestError } from '../errors/badRequest.error';
+import { SignInDto, SignUpDto } from '../routes/auth/dto/auth.dto';
+import userService from '../services/user.service';
 
-const signup = async (req: Request, res: Response, next: NextFunction) => {
-  const { email, password } = req.body;
+const signup = async (req: Request, res: Response): Promise<void> => {
+  const { identifier, password, rePassword }: SignUpDto = req.body;
 
-  const user = new User()
-  user.email = email;
-  user.password = password;
+  const validationErrors = validatePassword(password, rePassword);
 
-  //user.userLastLogin = new Date();
-  try {
-    const newUser = await dataSource.getRepository(User).save(user);
-    console.log(' \x1b[41m ', 'newUser:  ', newUser, ' [0m ');
-    return res.status(201).json(newUser);
-  } catch (err) {
-    console.log(' \x1b[41m ', 'err:  ', err, ' [0m ');
-    throw err;
+  if (validationErrors.length) {
+    throw new BadRequestError(validationErrors.join(' '));
   }
+
+  const isUserExists = await userService.getUserByIdentifier(identifier);
+
+  if (isUserExists) throw new BadRequestError('User already exists.');
+
+  const user = await userService.createUser(req.body);
+  // Serialize the user data with class transformer to exclude properties
+  // based on User model decorators
+  const serializedPayload = instanceToPlain(user);
+
+  res.status(201).json({
+    success: true,
+    payload: serializedPayload,
+  });
 };
 
-export default { signup };
+const signin = async (req: Request, res: Response): Promise<void> => {
+  const { identifier, password }: SignInDto = req.body;
+
+  const isUserExists = await userService.getUserByIdentifier(identifier);
+
+  if (isUserExists) throw new BadRequestError('User already exists.');
+
+  const user = await userService.createUser(req.body);
+  // Serialize the user data with class transformer to exclude properties
+  // based on User model decorators
+  const serializedPayload = instanceToPlain(user);
+
+  res.status(201).json({
+    success: true,
+    payload: serializedPayload,
+  });
+};
+
+export default { signup, signin };

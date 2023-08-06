@@ -1,80 +1,43 @@
-import { Request, Response, NextFunction } from 'express';
-import { CustomError } from '../errors/custom-error';
-import { IsEmail, MaxLength, validate, validateOrReject } from 'class-validator';
+import { ValidationError, ValidatorOptions, validate } from 'class-validator';
+import { NextFunction, Request, Response } from 'express';
+import { RequestValidationError } from '../errors/requestValidation.error';
 
-//interface ValidateRequest {
-//target: object;
-//}
 type ClassType<T> = new (...args: any[]) => T;
 
-export enum ValidationTarget {
-  BODY = 'body',
-  PARAMS = 'params',
-  QUERY = 'query',
-}
-export class SignUpDto {
-  @IsEmail()
-  @MaxLength(100)
-  readonly email: string;
-
-  /**
-   * @example string
-   */
-  //@IsString()
-  //@IsNotEmpty()
-  //readonly password: string;
-
-  //@IsNotEmpty()
-  //@IsString()
-  //readonly rePassword: string;
-
-  //@IsString()
-  //@MaxLength(30)
-  //@MinLength(2)
-  //readonly firstName: string;
-
-  //@IsString()
-  //@MaxLength(30)
-  //@MinLength(2)
-  readonly lastName: string;
+export interface ValidationArguments<T = object> {
+  body?: ClassType<T>;
+  params?: ClassType<T>;
+  query?: ClassType<T>;
 }
 
-export const validateRequest = (object: ClassType<object>) => {
-  console.log(' \x1b[41m ', '77777777777777777777:  ', 77777777777777777777, ' [0m ');
-  //switch (target) {
-  //	case "body":
-  //		const
-  //		break;
+const validatorOptions: ValidatorOptions = {
+  whitelist: true,
+  forbidUnknownValues: true,
+  forbidNonWhitelisted: true,
+};
 
-  //	case "params":
+export const validateRequest = (args: ValidationArguments) => {
+  return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const validationErrors: ValidationError[] = [];
 
-  //		break;
+    for (const [target, schema] of Object.entries(args)) {
+      // Set prototype of each target(body, params, query) appropriate schema that
+      // class-validator can validate it
+      const targetObject = Object.setPrototypeOf(req[target], schema.prototype);
+      // Validate target object
+      const errors = await validate(targetObject, validatorOptions);
 
-  //	case "query":
+      validationErrors.push(...errors);
+    }
 
-  //		break;
+    if (!validationErrors.length) return next();
 
-  //	default:
-  //		break;
-  //}
-  return async (req: Request, res: Response, next: NextFunction) => {
-    console.log(' \x1b[41m ', '88888888888888:  ', 88888888888888, ' [0m ');
-    req.body = Object.setPrototypeOf(req.body, object.prototype);
+    // Get validation error messages
+    const errorMessages: string[] = validationErrors.reduce(
+      (acc, err) => [...acc, ...Object.values(err.constraints || {})],
+      [] as string[]
+    );
 
-    //const targets = Object.keys(object);
-
-    //for (const [key, value] of Object.entries(object)) {
-
-    //const v = req[key];
-    //console.log(' \x1b[41m ', 'v:  ', v, ' [0m ');
-    //console.log(' \x1b[41m ', 'v:  ', value, ' [0m ');
-    const r = await validate(req.body, {
-      whitelist: true,
-      forbidUnknownValues: true,
-      forbidNonWhitelisted: true,
-    });
-    console.log(' \x1b[41m ', 'r:  ', r, ' [0m ');
-    next();
-    //}
+    throw new RequestValidationError(errorMessages);
   };
 };

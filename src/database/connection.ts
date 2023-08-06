@@ -12,7 +12,7 @@ export const dataSource = new DataSource({
   password: databaseConfig.MYSQL_PASSWORD,
   database: databaseConfig.MYSQL_DATABASE,
   entities: ['dist/models/*.js'],
-  logger: 'advanced-console',
+  logger: 'debug',
   synchronize: true,
   //driver: mysql2,
   //connectorPackage: 'mysql2',

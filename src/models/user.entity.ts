@@ -1,11 +1,9 @@
 import { Exclude } from 'class-transformer';
-import { IsEmail } from 'class-validator';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  Generated,
   Index,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -13,17 +11,16 @@ import {
 
 @Entity('user')
 export class User {
-  @PrimaryGeneratedColumn({ type: 'integer', name: 'user_id' })
+  @PrimaryGeneratedColumn({ type: 'integer' })
   public id: number;
 
-  //@Column({ type: 'uuid', name: 'user_uuid', unique: true })
-  //@Generated('uuid')
-  //@Index()
-  //public uuid: string;
+  @Index()
+  @Column({ type: 'varchar', default: null, unique: true })
+  public email: string | null;
 
-  //@IsEmail()
-  @Column({ type: 'varchar', unique: true })
-  public email: string;
+  @Index()
+  @Column({ type: 'varchar', default: null, unique: true })
+  public phoneNumber: string | null;
 
   @Column({ type: 'varchar' })
   public firstName: string;
@@ -31,25 +28,24 @@ export class User {
   @Column({ type: 'varchar' })
   public lastName: string;
 
-  //@Exclude()
   @Column({ type: 'boolean', default: false })
   public emailConfirmed: boolean;
 
   @Column({ type: 'boolean', default: true })
   public active: boolean;
 
-  //@Exclude()
+  @Exclude()
   @Column({ type: 'varchar', nullable: false, select: false })
   public password: string;
 
-  //@Exclude()
-  //@Column({ type: 'varchar', name: 'reset_password_hash', nullable: true, default: null })
+  @Column({ type: 'varchar', default: null, select: false })
+  public refreshToken: string | null;
+  //@Column({ type: 'varchar', nullable: true, default: null })
   //public resetPasswordHash: string;
 
   //@Exclude()
   //@Column({
   //  type: 'varchar',
-  //  name: 'user_activation_hash',
   //  nullable: true,
   //  default: null,
   //  select: false,
@@ -65,27 +61,19 @@ export class User {
   ////})
   ////public resetPasswordExpire: Date;
 
-  ////@Exclude()
-  ////@Column({
-  ////  type: 'time with time zone',
-  ////  nullable: true,
-  ////  default: null,
-  ////})
-  ////public userLastLogin: Date;
+  @Column({
+    type: 'datetime',
+    nullable: true,
+    default: null,
+  })
+  public userLastLogin: Date;
 
-  //@CreateDateColumn({ type: 'datetime', name: 'created_on' })
-  //public createdAt: Date;
+  @CreateDateColumn({ type: 'datetime' })
+  public createdAt: Date;
 
-  //@UpdateDateColumn({ type: 'datetime', name: 'updated_on' })
-  //public updatedAt: Date;
+  @UpdateDateColumn({ type: 'datetime' })
+  public updatedAt: Date;
 
-  //@Exclude()
-  //@DeleteDateColumn({ type: 'datetime', name: 'deleted_on' })
-  //public deletedAt: Date;
-
-  //static withId(id: number): User {
-  //  const user = new User();
-  //  user.id = id;
-  //  return user;
-  //}
+  @DeleteDateColumn({ type: 'datetime' })
+  public deletedAt: Date;
 }

@@ -1,4 +1,4 @@
-import { CustomError } from './custom-error';
+import { CustomError } from './custom.error';
 
 export class BadRequestError extends CustomError {
   public statusCode = 400;
@@ -7,7 +7,7 @@ export class BadRequestError extends CustomError {
     super(message);
   }
 
-  serializeErrors() {
+  serializeErrors(): { message: string; field?: string }[] {
     return [{ message: this.message }];
   }
 }
