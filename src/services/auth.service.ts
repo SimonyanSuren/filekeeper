@@ -53,6 +53,7 @@ const generateAccessToken = (
     remoteAddress,
     userAgent,
   };
+
   const { jwtConfig } = ConfigService.getConfigs();
   const token = jwt.sign(payload, jwtConfig.JWT_ACCESS_TOKEN_SECRET, {
     expiresIn: jwtConfig.JWT_ACCESS_TOKEN_EXPIRATION_TIME,
@@ -73,6 +74,7 @@ const generateRefreshToken = (
     remoteAddress,
     userAgent,
   };
+	
   const { jwtConfig } = ConfigService.getConfigs();
   const token = jwt.sign(payload, jwtConfig.JWT_REFRESH_TOKEN_SECRET, {
     expiresIn: jwtConfig.JWT_REFRESH_TOKEN_EXPIRATION_TIME,

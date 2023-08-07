@@ -1,5 +1,3 @@
-import { User } from './../../models/user.entity';
-
 export interface JwtPayload {
   sub: number;
   //username: string;

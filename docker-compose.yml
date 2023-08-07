@@ -7,12 +7,12 @@ services:
     image: filekeeper-api
     build:
       context: .
-      #entrypoint: sh -c 'sleep 5 && npm run start:prod'
+    entrypoint: sh -c 'sleep 5 && npm run start:prod'
       ### For development run
-      target: development
-    entrypoint: sh -c 'sleep 5 && npm run dev'
-    volumes:
-      - ./src:/home/node/filekeeper-api/src
+    #  target: development
+    #entrypoint: sh -c 'sleep 5 && npm run dev'
+    #volumes:
+    #  - ./src:/home/node/filekeeper-api/src
     ###
     env_file:
       - .env

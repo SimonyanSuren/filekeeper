@@ -1,10 +1,9 @@
 import { isEmail } from 'class-validator';
-import { FindOneOptions } from 'typeorm';
 import passwordUtil from '../common/utils/password.util';
 import { dataSource } from '../database/connection';
+import { entityManager } from '../database/entityManager';
 import { User } from '../models/user.entity';
 import { SignUpDto } from '../routes/auth/dto/auth.dto';
-import { entityManager } from '../database/entityManager';
 
 const createUser = async (userData: SignUpDto): Promise<User> => {
   const user = new User();
