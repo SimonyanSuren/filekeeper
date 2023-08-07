@@ -4,9 +4,11 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { File } from './file.entity';
 
 @Entity('user')
 export class User {
@@ -50,4 +52,7 @@ export class User {
 
   @DeleteDateColumn({ type: 'datetime' })
   public deletedAt: Date;
+
+  @OneToMany(() => File, (file) => file.user)
+  public files: File[];
 }

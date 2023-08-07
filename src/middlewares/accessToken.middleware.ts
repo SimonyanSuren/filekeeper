@@ -1,18 +1,17 @@
 import { NextFunction, Request, Response } from 'express';
+import passport from 'passport';
 import { UnauthorizedError } from '../errors/unauthorized.error';
+import { User } from '../models/user.entity';
 
 export const accessTokenMiddleware = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-  try {
-    const token = req.header('Authorization')?.replace('Bearer ', '');
+  passport.authenticate('access-token', { session: false }, async (err, user: User) => {
+    if (err || !user) return next(new UnauthorizedError());
 
-    if (!token) throw new UnauthorizedError();
-
+    req.user = user;
     next();
-  } catch (error) {
-    throw new UnauthorizedError();
-  }
+  })(req, res, next);
 };

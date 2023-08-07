@@ -6,11 +6,10 @@ import passport from 'passport';
 import swaggerUi from 'swagger-ui-express';
 import { NotFoundError } from './errors/notFound.error';
 import { errorHandler } from './middlewares/errorHandler.middleware';
-import authRouter from './routes/auth/auth.route';
+import routers from './routes';
 import { accessTokenStrategy } from './routes/auth/strategy/accessToken.strategy';
 import { localStrategy } from './routes/auth/strategy/local.strategy';
 import { refreshTokenStrategy } from './routes/auth/strategy/refreshToken.strategy';
-import fileRouter from './routes/file/file.route';
 import * as swaggerDocument from './swagger.json';
 
 // Initialize express app
@@ -39,10 +38,7 @@ refreshTokenStrategy(passport);
 app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Routes
-//app.all('api/v1');
-app.use(authRouter);
-app.use(fileRouter);
-//app.use(currentUserRouter);
+app.use('/api/v1', routers);
 
 app.all('*', async () => {
   throw new NotFoundError();

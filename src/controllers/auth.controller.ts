@@ -34,10 +34,18 @@ const signup = async (req: Request, res: Response): Promise<void> => {
 };
 
 const signin = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const userAgent = req.headers['user-agent'];
+  const remoteAddress =
+    req.get('x-real-ip') || req.get('x-forwarded-for') || req.socket.remoteAddress;
+
   passport.authenticate('local', { session: false }, async (err, user: User) => {
     if (err) return next(err);
 
-    const accessToken = authService.generateAccessToken(user.id);
+    const accessToken = authService.generateAccessToken(
+      user.id,
+      remoteAddress,
+      userAgent
+    );
     const refreshToken = authService.generateRefreshToken(user.id);
 
     // Save refresh token in database for future  validation and for sign out
@@ -46,7 +54,7 @@ const signin = async (req: Request, res: Response, next: NextFunction): Promise<
     await authService.saveRefreshToken(user.id, refreshToken);
 
     return res
-      .status(200)
+      .status(201)
       .json({ success: true, payload: { accessToken, refreshToken } });
   })(req, res, next);
 };
@@ -56,13 +64,11 @@ const signout = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-  passport.authenticate('access-token', { session: false }, async (err, user: User) => {
-    if (err || !user) return next(new UnauthorizedError());
+  const { id } = req.user as User;
 
-    await authService.removeRefreshToken(user.id);
+  await authService.removeRefreshToken(id);
 
-    return res.status(200).json({ success: true, payload: null });
-  })(req, res, next);
+  res.status(200).json({ success: true, payload: null });
 };
 
 const refresh = async (
@@ -75,7 +81,7 @@ const refresh = async (
 
     const accessToken = authService.generateAccessToken(user.id);
 
-    return res.status(200).json({ success: true, payload: { accessToken } });
+    return res.status(201).json({ success: true, payload: { accessToken } });
   })(req, res, next);
 };
 

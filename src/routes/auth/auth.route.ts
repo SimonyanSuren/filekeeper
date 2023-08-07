@@ -7,9 +7,9 @@ import { SignInDto, SignUpDto } from './dto/auth.dto';
 
 const router = Router();
 
-router.post('/auth/signup', validateRequest({ body: SignUpDto }), authController.signup);
-router.post('/auth/signin', validateRequest({ body: SignInDto }), authController.signin);
-router.post('/auth/signin/new-token', refreshTokenMiddleware, authController.refresh);
-router.get('/auth/signout', accessTokenMiddleware, authController.signout);
+router.post('/signup', validateRequest({ body: SignUpDto }), authController.signup);
+router.post('/signin', validateRequest({ body: SignInDto }), authController.signin);
+router.post('/signin/new-token', refreshTokenMiddleware, authController.refresh);
+router.get('/signout', accessTokenMiddleware, authController.signout);
 
 export default router;

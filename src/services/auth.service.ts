@@ -1,14 +1,13 @@
+import * as bcrypt from 'bcrypt';
+import * as jwt from 'jsonwebtoken';
 import { JwtPayload } from '../common/interfaces/jwtPayload.interface';
 import passwordUtil from '../common/utils/password.util';
 import { dataSource } from '../database/connection';
 import { entityManager } from '../database/entityManager';
 import { BadRequestError } from '../errors/badRequest.error';
-import { NotFoundError } from '../errors/notFound.error';
 import { UnauthorizedError } from '../errors/unauthorized.error';
 import { User } from '../models/user.entity';
 import { ConfigService } from './config.service';
-import * as jwt from 'jsonwebtoken';
-import * as bcrypt from 'bcrypt';
 
 const findUserById = async (id: number): Promise<User | null> => {
   return dataSource.getRepository(User).findOneBy({ id });
@@ -84,13 +83,6 @@ const generateRefreshToken = (
   return token;
 };
 
-//const  getCookieForLogOut=  (): string[] {
-//	return [
-//		'Access=; HttpOnly; Path=/; SameSite=Lax; Secure; Max-Age=0',
-//		'Refresh=; HttpOnly; Path=/; SameSite=Lax; Secure; Max-Age=0',
-//	];
-//}
-
 const saveRefreshToken = async (userId: number, refreshToken: string): Promise<void> => {
   const { jwtConfig } = ConfigService.getConfigs();
 
@@ -108,7 +100,7 @@ const validateRefreshToken = async (
 ): Promise<User | null> => {
   const user = await dataSource
     .getRepository(User)
-    .findOne({ where: { id: userId }, select: ['refreshToken'] });
+    .findOne({ where: { id: userId }, select: ['refreshToken', 'id'] });
 
   if (!user?.refreshToken) {
     throw new UnauthorizedError();

@@ -3,20 +3,32 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { User } from './user.entity';
 
 @Entity('file')
-export class User {
+export class File {
   @PrimaryGeneratedColumn({ type: 'integer' })
   public id: number;
+
+  @Column({ type: 'integer' })
+  public userId: number;
 
   @Column({ type: 'varchar' })
   public fileName: string;
 
   @Column({ type: 'varchar' })
-  public mimeType: string;
+  public originalFileName: string;
+
+  @Column({ type: 'varchar' })
+  public path: string;
+
+  @Column({ type: 'varchar' })
+  public mimetype: string;
 
   @Column({ type: 'varchar' })
   public extension: string;
@@ -32,4 +44,8 @@ export class User {
 
   @DeleteDateColumn({ type: 'datetime' })
   public deletedAt: Date;
+
+  @ManyToOne(() => User, (user) => user.files)
+  @JoinColumn({ name: 'userId' })
+  user: User;
 }

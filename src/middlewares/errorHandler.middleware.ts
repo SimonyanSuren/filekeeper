@@ -1,4 +1,5 @@
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
+import Logger from '../common/logger/logger';
 import { CustomError } from '../errors/custom.error';
 
 export const errorHandler = async (
@@ -7,7 +8,7 @@ export const errorHandler = async (
   res: Response,
   next: NextFunction
 ): Promise<Response> => {
-  console.log(err);
+  Logger.error(err);
   if (err instanceof CustomError) {
     return res
       .status(err.statusCode)
