@@ -4,7 +4,6 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  Index,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -14,11 +13,9 @@ export class User {
   @PrimaryGeneratedColumn({ type: 'integer' })
   public id: number;
 
-  @Index()
   @Column({ type: 'varchar', default: null, unique: true })
   public email: string | null;
 
-  @Index()
   @Column({ type: 'varchar', default: null, unique: true })
   public phoneNumber: string | null;
 
@@ -38,34 +35,11 @@ export class User {
   @Column({ type: 'varchar', nullable: false, select: false })
   public password: string;
 
+  @Exclude()
   @Column({ type: 'varchar', default: null, select: false })
   public refreshToken: string | null;
-  //@Column({ type: 'varchar', nullable: true, default: null })
-  //public resetPasswordHash: string;
 
-  //@Exclude()
-  //@Column({
-  //  type: 'varchar',
-  //  nullable: true,
-  //  default: null,
-  //  select: false,
-  //})
-  //public activationHash: string;
-
-  ////@Exclude()
-  ////@Column({
-  ////  type: 'time with time zone',
-  ////  name: 'reset_password_expire',
-  ////  nullable: true,
-  ////  default: null,
-  ////})
-  ////public resetPasswordExpire: Date;
-
-  @Column({
-    type: 'datetime',
-    nullable: true,
-    default: null,
-  })
+  @Column({ type: 'datetime', nullable: true, default: null })
   public userLastLogin: Date;
 
   @CreateDateColumn({ type: 'datetime' })

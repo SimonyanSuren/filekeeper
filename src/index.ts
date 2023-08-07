@@ -1,12 +1,13 @@
 import 'reflect-metadata';
 import { app } from './app';
-import { validateEnvConfigurations } from './common/config/env.validation';
 import Logger from './common/logger/logger';
 import { dataSource } from './database/connection';
+import { ConfigService } from './services/config.service';
 
 const bootstrap = async (): Promise<void> => {
   // Validate environment configurations
-  const validatedConfigs = validateEnvConfigurations(process.env);
+  ConfigService.validate();
+  const validatedConfigs = ConfigService.getConfigs();
 
   try {
     // Connect to database
@@ -28,8 +29,8 @@ bootstrap()
   })
   .catch((err) => {
     throw err;
-    //console.log(err);
-    process.exit(1);
+    //Logger.error(err);
+    //process.exit(1);
   });
 
 process.on('unhandledRejection', (reason) => {

@@ -20,24 +20,22 @@ const createUser = async (userData: SignUpDto): Promise<User> => {
   return dataSource.getRepository(User).save(user);
 };
 
-//const getUserByIdentifier = async (username: string): Promise<User | null> => {
-//  const filters: FindOneOptions<User> = {
-//    where: isEmail(username) ? { email: username } : { phoneNumber: username },
-//    select: ['password'],
-//		add
-//  };
-//  return dataSource.getRepository(User).findOne(filters);
-//};
+const findUserById = async (id: number): Promise<User | null> => {
+  return dataSource.getRepository(User).findOneBy({ id });
+};
 
-const  getUserByIdentifier = async (username: User['email'|'phoneNumber'], cache?: number): Promise<User | null> {
-	const query =  entityManager
-		.createQueryBuilder(User, 'user')
-		.where('user.email = :email OR user.phoneNumber = :username')
-		.setParameters({ username: username })
-		.addSelect('user.password');
+const getUserByUsername = async (
+  username: User['email' | 'phoneNumber'],
+  cache?: number
+): Promise<User | null> => {
+  const query = entityManager
+    .createQueryBuilder(User, 'user')
+    .where('user.email = :username OR user.phoneNumber = :username')
+    .setParameters({ username: username })
+    .addSelect('user.password');
 
-	if (cache) query.cache(cache);
+  if (cache) query.cache(cache);
 
-	return await query.getOne();
-}
-export default { createUser, getUserByIdentifier };
+  return query.getOne();
+};
+export default { createUser, getUserByIdentifier: getUserByUsername, findUserById };

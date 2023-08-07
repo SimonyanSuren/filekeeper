@@ -7,7 +7,7 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "sourceMap": true,
-    "declaration": true,
+    //"declaration": true,
     "incremental": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
@@ -24,7 +24,8 @@
     "noImplicitReturns": true,
     "alwaysStrict": true,
     "strictFunctionTypes": true,
-    "noUnusedParameters": false
+    "noUnusedParameters": false,
+		"resolveJsonModule": true
   },
   "include": ["src/**/*"],  
   "exclude": ["node_modules"]

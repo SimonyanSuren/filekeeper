@@ -32,3 +32,11 @@ export class SignInDto {
   @IsString()
   readonly password: string;
 }
+
+//export class SignInDto {
+//  @IsEmail()
+//  readonly username: string;
+
+//  @IsString()
+//  readonly password: string;
+//}
